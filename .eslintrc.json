@@ -1,0 +1,55 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint/eslint-plugin",
+    "eslint-plugin-import-helpers"
+  ],
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "alphabetize": {
+          "order": "asc",
+          "ignoreCase": true
+        },
+        "groups": [
+          "/@nestjs.*/",
+          "/typeorm.*/",
+          "/@shared.*/",
+          [
+            "module"
+          ],
+          "/.common./",
+          "/.service./",
+          "/app./",
+          "/helper./",
+          "/utils./",
+          "/lib./",
+          "/(config\/con)/",
+          [
+            "absolute"
+          ]
+        ]
+      }
+    ],
+    "@typescript-eslint/no-explicit-any": "off"
+  }
+}
