@@ -2,7 +2,7 @@ import { mainnetConfig } from './mainnet';
 import { testnetConfig } from './testnet';
 import { AppConfig, ENV } from './type';
 
-export const getAppConfig = (net: ENV): AppConfig => {
+export const getAppConfig = (net = ENV.testnet): AppConfig => {
   if (net !== ENV.mainnet && net !== ENV.testnet)
     throw new Error(`NEST_CONFIG must be ${ENV.mainnet} or ${ENV.testnet}`);
 
@@ -12,7 +12,7 @@ export const getAppConfig = (net: ENV): AppConfig => {
 };
 
 export default (): { app: AppConfig } => {
-  const currentNetwork = process.env.NEST_CONFIG;
+  const currentNetwork = process.env.NEST_CONFIG || ENV.testnet;
 
   if (currentNetwork !== ENV.mainnet && currentNetwork !== ENV.testnet)
     throw new Error(`NEST_CONFIG must be ${ENV.mainnet} or ${ENV.testnet}`);

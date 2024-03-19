@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../src/config/envs/type.ts"],"sourcesContent":["export enum ENV {\n  testnet = 'testnet',\n  mainnet = 'mainnet',\n}\n\nexport interface AppConfig {\n  name: string;\n  net: ENV;\n}\n\nexport interface ConfigServiceApp {\n  app: AppConfig;\n}\n"],"names":["ENV"],"mappings":";;;;;;;;;;;UAAYA;;;GAAAA,QAAAA"}

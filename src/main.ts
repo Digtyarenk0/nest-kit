@@ -26,7 +26,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
   app.enableCors({
-    origin: configService.get<string>('frontDomain'),
     credentials: true,
   });
 
