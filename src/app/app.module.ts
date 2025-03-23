@@ -30,16 +30,17 @@ const configImports = [
   //     password: process.env.REDIS_PASSWORD,
   //   },
   // }),
-  // TypeOrmModule.forRoot({
-  //   type: 'postgres',
-  //   host: process.env.POSTGRES_HOST,
-  //   port: Number(process.env.POSTGRES_PORT),
-  //   username: process.env.POSTGRES_USER,
-  //   password: process.env.POSTGRES_PASSWORD,
-  //   database: process.env.POSTGRES_DB,
-  //   entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
-  //   synchronize: true,
-  // }),
+  TypeOrmModule.forRoot({
+    type: 'postgres',
+    host: process.env.POSTGRES_HOST,
+    port: Number(process.env.POSTGRES_PORT),
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
+    entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
+    logging: ['error', 'slow'],
+    maxQueryExecutionTime: 100,
+  }),
 ];
 
 @Module({
