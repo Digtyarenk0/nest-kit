@@ -11,6 +11,8 @@ import configuration from 'config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getMetadataArgsStorage } from 'typeorm';
 import { CommonModule } from './common/common.module';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 const configImports = [
   LoggerModule.forRoot(),
@@ -38,13 +40,13 @@ const configImports = [
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
-    entities: ['src/**/*.entity.ts'],
+    entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
     logging: ['error'],
     maxQueryExecutionTime: 100,
   }),
 ];
 
 @Module({
-  imports: [...configImports, CommonModule],
+  imports: [...configImports, CommonModule, UserModule, AuthModule],
 })
 export class AppModule {}
