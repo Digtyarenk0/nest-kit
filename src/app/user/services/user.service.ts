@@ -17,7 +17,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<string> {
+  async register(registerDto: RegisterDto): Promise<User> {
     const existingUser = await this.userRepository.findOne({
       where: { email: registerDto.email },
     });
@@ -27,11 +27,11 @@ export class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-    const user = this.userRepository.save({
+    const user = await this.userRepository.save({
       ...registerDto,
       password: hashedPassword,
     });
-    return 'UserCreated';
+    return user;
   }
 
   async validateUser(loginDto: LoginDto): Promise<User> {

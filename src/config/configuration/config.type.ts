@@ -4,5 +4,6 @@ export interface ConfigAppType {
   jwt: {
     secret: string;
     accessExpires: string;
+    refreshExpires: string;
   };
 }

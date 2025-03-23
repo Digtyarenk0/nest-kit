@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-
+import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from 'app/user/services/user.service';
-import { TokenDto } from '../dto/token.dto';
 import { LoginDto } from 'app/user/dto/login.dto';
+import { RegisterDto } from '../../user/dto/register.dto';
 import { AUTH_TOKENS_CONFIG } from '../constants';
+import { AuthLoginRes } from '../types';
 
 @Injectable()
 export class AuthService {
@@ -15,10 +16,19 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async login(loginDto: LoginDto): Promise<TokenDto> {
+  async register(
+    registerDto: RegisterDto,
+    res: Response,
+  ): Promise<AuthLoginRes> {
+    await this.userService.register(registerDto);
+    return this.login(registerDto, res);
+  }
+
+  async login(loginDto: LoginDto, res: Response): Promise<AuthLoginRes> {
     const user = await this.userService.validateUser(loginDto);
 
     const payload = { sub: user.id, email: user.email };
+    console.log(this.configService.get('jwt.accessExpires'));
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
@@ -27,10 +37,20 @@ export class AuthService {
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get('jwt.secret'),
-        expiresIn: AUTH_TOKENS_CONFIG.refreshTokenExpiresIn,
+        expiresIn: this.configService.get('jwt.refreshExpires'),
       }),
     ]);
 
-    return { accessToken, refreshToken };
+    this.setRefreshTokenCookie(res, refreshToken);
+    return { accessToken };
+  }
+
+  setRefreshTokenCookie(response: Response, refreshToken: string): void {
+    response.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict' as const,
+      maxAge: AUTH_TOKENS_CONFIG.refreshTokenExpiresIn,
+    });
   }
 }
