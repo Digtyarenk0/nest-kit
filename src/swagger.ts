@@ -4,9 +4,8 @@ import {
   DocumentBuilder,
   SwaggerDocumentOptions,
 } from '@nestjs/swagger';
-import { InitModule } from 'app/init/init.module';
 
-const include = [InitModule];
+const include = []; // Modules array
 
 export class Swagger {
   static init(app: INestApplication) {
