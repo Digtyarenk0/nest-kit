@@ -3,46 +3,53 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { getMetadataArgsStorage } from 'typeorm';
 
 import * as redisStore from 'cache-manager-redis-store';
-import AppConfig from 'config/envs';
 import { LoggerModule } from 'nestjs-pino';
 
+import { CommonModule } from './common/common.module';
+
 import configuration from 'config/configuration';
-import { InitModule } from './init/init.module';
+
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 const configImports = [
   LoggerModule.forRoot(),
   ScheduleModule.forRoot(),
   ConfigModule.forRoot({
     isGlobal: true,
-    load: [configuration, AppConfig],
+    load: [configuration],
   }),
-  // CacheModule.register({
-  //   isGlobal: true,
-  //   store: redisStore,
-  //   url: process.env.REDIS_URL,
-  //   password: process.env.REDIS_PASSWORD,
-  // }),
-  // BullModule.forRoot({
-  //   url: process.env.REDIS_URL,
-  //   redis: {
-  //     password: process.env.REDIS_PASSWORD,
-  //   },
-  // }),
-  // TypeOrmModule.forRoot({
-  //   type: 'postgres',
-  //   host: process.env.POSTGRES_HOST,
-  //   port: Number(process.env.POSTGRES_PORT),
-  //   username: process.env.POSTGRES_USER,
-  //   password: process.env.POSTGRES_PASSWORD,
-  //   database: process.env.POSTGRES_DB,
-  //   entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
-  //   synchronize: true,
-  // }),
+  CacheModule.register({
+    isGlobal: true,
+    store: redisStore,
+    url: process.env.REDIS_URL,
+    password: process.env.REDIS_PASSWORD,
+  }),
+  BullModule.forRoot({
+    url: process.env.REDIS_URL,
+    redis: {
+      password: process.env.REDIS_PASSWORD,
+    },
+  }),
+  TypeOrmModule.forRoot({
+    type: 'postgres',
+    host: process.env.POSTGRES_HOST,
+    port: Number(process.env.POSTGRES_PORT),
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
+    entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
+    logging: ['error'],
+    maxQueryExecutionTime: 100,
+  }),
 ];
 
 @Module({
-  imports: [...configImports, InitModule],
+  imports: [...configImports, CommonModule, UserModule, AuthModule],
 })
 export class AppModule {}

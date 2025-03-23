@@ -1,12 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import {
-  SwaggerModule,
   DocumentBuilder,
   SwaggerDocumentOptions,
+  SwaggerModule,
 } from '@nestjs/swagger';
-import { InitModule } from 'app/init/init.module';
 
-const include = [InitModule];
+const include = []; // Modules array
 
 export class Swagger {
   static init(app: INestApplication) {
