@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Nest.js",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": [
+                "run",
+                "start:debug",
+                "-r",
+                "ts-node/register",
+                "-r",
+                "tsconfig-paths/register",
+                "--inspect-brk",
+            ],
+            "cwd": "${workspaceRoot}",
+            "args": [
+                "${workspaceFolder}/src/main.ts"
+            ],
+            "autoAttachChildProcesses": true,
+            "restart": true,
+            "sourceMaps": true,
+            "stopOnEntry": false,
+            "console": "integratedTerminal",
+        },
+    ]
+}
