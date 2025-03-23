@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+
+import { Response } from 'express';
+
 import { UserService } from 'app/user/services/user.service';
+
 import { LoginDto } from 'app/user/dto/login.dto';
+
 import { RegisterDto } from '../../user/dto/register.dto';
 import { AUTH_TOKENS_CONFIG } from '../constants';
 import { AuthLoginRes } from '../types';
@@ -21,15 +25,13 @@ export class AuthService {
     res: Response,
   ): Promise<AuthLoginRes> {
     await this.userService.register(registerDto);
-    return this.login(registerDto, res);
+    return await this.login(registerDto, res);
   }
 
   async login(loginDto: LoginDto, res: Response): Promise<AuthLoginRes> {
     const user = await this.userService.validateUser(loginDto);
 
     const payload = { sub: user.id, email: user.email };
-    console.log(this.configService.get('jwt.accessExpires'));
-
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get('jwt.secret'),

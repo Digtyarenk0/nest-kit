@@ -1,13 +1,16 @@
 import {
-  Controller,
-  Post,
   Body,
-  Res,
+  Controller,
   HttpCode,
   HttpStatus,
+  Post,
+  Res,
 } from '@nestjs/common';
+
 import { Response } from 'express';
+
 import { AuthService } from '../services/auth.service';
+
 import { LoginDto } from '../../user/dto/login.dto';
 import { RegisterDto } from '../../user/dto/register.dto';
 
@@ -20,7 +23,7 @@ export class AuthController {
     @Body() registerDto: RegisterDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    await this.authService.register(registerDto, response);
+    return this.authService.register(registerDto, response);
   }
 
   @Post('login')

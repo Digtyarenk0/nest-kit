@@ -3,16 +3,19 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { getMetadataArgsStorage } from 'typeorm';
 
 import * as redisStore from 'cache-manager-redis-store';
 import { LoggerModule } from 'nestjs-pino';
 
-import configuration from 'config/configuration';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { getMetadataArgsStorage } from 'typeorm';
 import { CommonModule } from './common/common.module';
-import { UserModule } from './user/user.module';
+
+import configuration from 'config/configuration';
+
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 const configImports = [
   LoggerModule.forRoot(),

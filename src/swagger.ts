@@ -1,8 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import {
-  SwaggerModule,
   DocumentBuilder,
   SwaggerDocumentOptions,
+  SwaggerModule,
 } from '@nestjs/swagger';
 
 const include = []; // Modules array

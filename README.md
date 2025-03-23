@@ -1,73 +1,181 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# NestJS Kit
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS application template with pre-installed modules and configured architecture.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Technologies
 
-## Description
+- **NestJS** - framework for building scalable server-side applications
+- **TypeORM** - ORM for database operations
+- **PostgreSQL** - main database
+- **Redis** - for session storage and caching
+- **JWT** - for authentication
+- **Bull** - for queue management
+- **Winston** - for logging
+- **Class Validator** - for DTO validation
+- **ConfigModule** - for configuration management
+- **Swagger** - for API documentation
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Project Structure
 
-## Installation
-
-```bash
-$ yarn install
+```
+src/
+├── app/                    # Application modules
+│   ├── auth/              # Authentication module
+│   │   ├── controllers/   # Auth controllers
+│   │   ├── services/      # Auth services
+│   │   ├── dto/          # Auth DTOs
+│   │   └── constants/    # Auth constants
+│   ├── user/             # User module
+│   │   ├── controllers/  # User controllers
+│   │   ├── services/     # User services
+│   │   └── dto/         # User DTOs
+│   └── common/           # Common module
+├── config/               # Configuration files
+├── database/            # Database entities and migrations
+└── main.ts             # Application entry point
 ```
 
-## Running the app
+## Architectural Approach
 
+The project follows Domain-Driven Design (DDD) and SOLID principles:
+
+### Core Principles
+- Layer separation (domain, application, infrastructure)
+- Dependency inversion
+- Single responsibility
+- Open/closed principle
+- DRY (Don't Repeat Yourself)
+
+### Module Structure
+Each module follows the same structure:
+- `controllers/` - HTTP request handlers
+- `services/` - Business logic
+- `dto/` - Data Transfer Objects
+- `constants/` - Module-specific constants
+
+## Installation and Setup
+
+1. Install dependencies:
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+yarn install
 ```
 
-## Test
-
+2. Create database:
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+yarn db:create
 ```
 
-## Support
+3. Generate migrations:
+```bash
+yarn migration:generate src/migrations/InitialMigration
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+4. Run migrations:
+```bash
+yarn migration:run
+```
 
-## Stay in touch
+5. Start the application:
+```bash
+# Development
+yarn start:dev
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Production
+yarn build
+yarn start:prod
+```
+
+## Commands
+
+### Migrations
+- `yarn migration:generate src/migrations/[name]` - generate migration based on entity changes
+- `yarn migration:create src/migrations/[name]` - create empty migration
+- `yarn migration:run` - apply migrations
+- `yarn migration:revert` - revert last migration
+
+### Database
+- `yarn db:create` - create database
+- `yarn db:drop` - drop database
+
+### Development
+- `yarn start:dev` - start in development mode
+- `yarn build` - build project
+- `yarn start:prod` - start in production mode
+- `yarn test` - run tests
+- `yarn test:e2e` - run end-to-end tests
+
+## Authentication
+
+The project uses JWT authentication with two tokens:
+- Access Token (15 minutes) - in response body
+- Refresh Token (7 days) - in httpOnly cookie
+
+### Endpoints
+- `POST /auth/register` - user registration
+- `POST /auth/login` - user login
+
+## Logging
+
+Configured Winston logger with file rotation and different log levels:
+- error - errors
+- warn - warnings
+- info - information messages
+- debug - debug information
+
+## API Documentation
+
+Swagger documentation is available at `/api` endpoint when running in development mode.
+
+## Configuration
+
+All settings are stored in `.env` file:
+```env
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_DATABASE=kit_b
+
+# JWT
+JWT_SECRET=your_jwt_secret
+JWT_ACCESS_EXPIRES=15m
+JWT_REFRESH_EXPIRES=7d
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# Logging
+LOG_LEVEL=info
+```
+
+## Migration Process
+
+1. First, ensure your database is created:
+```bash
+yarn db:create
+```
+
+2. Generate migration based on entity changes:
+```bash
+yarn migration:generate src/migrations/InitialMigration
+```
+This will create a new migration file in `src/database/migrations/` with SQL queries based on your entity changes.
+
+3. Review the generated migration file to ensure it contains the correct SQL queries.
+
+4. Apply the migration:
+```bash
+yarn migration:run
+```
+This will execute the SQL queries and update your database schema.
+
+If you need to revert the last migration:
+```bash
+yarn migration:revert
+```
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+MIT
