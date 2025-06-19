@@ -1,6 +1,16 @@
-# START APP COMMAND
+## 🚀 Start the Application
 
-docker compose up --build
+To start the application:
+
+1. Create a `.env` file based on the provided `.env.example`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Build and run the app with Docker Compose:
+   ```bash
+    docker compose up --build
+   ```
 
 # NestJS Kit
 

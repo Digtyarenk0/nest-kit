@@ -26,7 +26,7 @@ export class ProjectsService {
     this.processQueuedProjects();
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async processQueuedProjects() {
     try {
       const queuedProjects = await this.projectRepository.find({
