@@ -7,9 +7,8 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
 import cookieParser from 'cookie-parser';
-import { Logger } from 'nestjs-pino';
 
-import { AppModule } from 'app/app.module';
+import { MainModule } from 'apps/main.module';
 
 import { Swagger } from './swagger';
 
@@ -18,7 +17,7 @@ async function bootstrap() {
     bufferLogs: true,
   };
 
-  const app = await NestFactory.create(AppModule, appModuleParams);
+  const app = await NestFactory.create(MainModule, appModuleParams);
 
   Swagger.init(app);
 
@@ -30,9 +29,9 @@ async function bootstrap() {
   });
 
   NestLogger.log(`App logs: ${configService.get('logs')}`, 'Config');
-  if (configService.get('logs')) {
-    app.useLogger(app.get(Logger));
-  }
+  // if (configService.get('logs')) {
+  //   app.useLogger(app.get(Logger));
+  // }
 
   await app.listen(configService.get('port'), () => {
     console.log(`Server started on port: ${configService.get('port')}`);

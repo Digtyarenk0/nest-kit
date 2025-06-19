@@ -2,8 +2,7 @@ import dotenv from 'dotenv';
 
 import { ConfigAppType } from './config.type';
 
-//теперь читает env не только в linux/macos но и в windows
-dotenv.config(); // тут можно настроить детальнее
+dotenv.config();
 
 const env = process.env;
 
@@ -16,7 +15,6 @@ export default (): ConfigAppType => ({
     refreshExpires: env.JWT_REFRESH_EXPIRES || '7d',
   },
   redis: {
-    //Увидел что везде юзается url, но добавил на всякий случай. вдруг где то нужно будет только порт или хост и тд
     host: env.REDIS_HOST || 'localhost',
     port: Number(env.REDIS_PORT) || 6379,
     password: env.REDIS_PASSWORD || undefined,

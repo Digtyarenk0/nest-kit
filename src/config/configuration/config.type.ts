@@ -16,6 +16,7 @@ export interface RedisConfig {
   password?: string;
   url: string;
 }
+
 export interface ConfigAppType {
   port: number;
   logs: boolean;
