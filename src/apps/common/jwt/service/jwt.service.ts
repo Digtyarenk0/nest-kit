@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
+import { JwtConfig } from 'config/configuration/config.type';
+
 @Injectable()
 export class JWTService {
   private readonly logger = new Logger(JWTService.name);
@@ -14,9 +16,11 @@ export class JWTService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
-    this.jwtSecretAccess = this.configService.get('jwt.accessSecret');
-    this.jwtAccessExpire = this.configService.get('jwt.accessExpires');
-    this.jwtRefreshExpire = this.configService.get('jwt.refreshExpires');
+    this.jwtSecretAccess = this.configService.get<JwtConfig>('jwt').secret;
+    this.jwtAccessExpire =
+      this.configService.get<JwtConfig>('jwt').accessExpires;
+    this.jwtRefreshExpire =
+      this.configService.get<JwtConfig>('jwt').refreshExpires;
   }
 
   async generateTokens<T extends object>(payload: T) {

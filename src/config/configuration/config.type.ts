@@ -19,6 +19,7 @@ export interface RedisConfig {
 
 export interface ConfigAppType {
   port: number;
+  appURL: string;
   logs: boolean;
   jwt: JwtConfig;
   redis: RedisConfig;
