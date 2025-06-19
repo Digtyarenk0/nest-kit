@@ -1,9 +1,10 @@
-FROM node:18-bookworm 
+FROM node:22.3.0
+
+WORKDIR /app/
+COPY . .
+
+RUN chmod +x entrypoint.sh
 
 ENV CI=true
 
-# Build app
-RUN yarn install && yarn run build
-
-EXPOSE 5001
-CMD [ "yarn", "run", "start:prod"]
+ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
