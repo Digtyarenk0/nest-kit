@@ -1,3 +1,7 @@
+# START APP COMMAND
+
+docker compose up --build
+
 # NestJS Kit
 
 A NestJS application template with pre-installed modules and configured architecture.
