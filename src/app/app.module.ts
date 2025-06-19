@@ -27,7 +27,7 @@ const configImports = [
     isGlobal: true,
     load: [configuration],
   }),
-  //Пример использования ConfigModule
+
   CacheModule.registerAsync({
     isGlobal: true,
     inject: [ConfigService],
@@ -54,34 +54,6 @@ const configImports = [
     }),
     inject: [ConfigService],
   }),
-
-  //ВОТ так не делать process.env, юзаем только через ConfigService, ибо нахуй он тогда в проекте если его не юзать
-
-  // CacheModule.register({
-  //   isGlobal: true,
-  //   store: redisStore,
-  //   url: process.env.REDIS_URL,
-  //   password: process.env.REDIS_PASSWORD,
-  // }),
-
-  // BullModule.forRoot({
-  //   url: process.env.REDIS_URL,
-  //   redis: {
-  //     password: process.env.REDIS_PASSWORD,
-  //   },
-  // }),
-
-  // TypeOrmModule.forRoot({
-  //   type: 'postgres',
-  //   host: process.env.POSTGRES_HOST,
-  //   port: Number(process.env.POSTGRES_PORT),
-  //   username: process.env.POSTGRES_USER,
-  //   password: process.env.POSTGRES_PASSWORD,
-  //   database: process.env.POSTGRES_DB,
-  //   entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
-  //   logging: ['error'],
-  //   maxQueryExecutionTime: 100,
-  // }),
 ];
 
 @Module({
