@@ -3,51 +3,37 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
-import { User } from 'database/entities/users/user.entity';
+import { User } from 'shared/database/entities/users/user.entity';
+import { IUserRepository } from 'shared/database/repositories/user/user.repo.interface';
 
 import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+  constructor(private readonly _userRepository: IUserRepository) {}
 
   async register(registerDto: RegisterDto): Promise<User> {
-    const existingUser = await this.userRepository.findOne({
-      where: { email: registerDto.email },
-    });
+    const existingUser = await this._userRepository.findOneByEmail(
+      registerDto.email,
+    );
 
     if (existingUser) {
       throw new ConflictException('User with this email already exists');
     }
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-    const user = await this.userRepository.save({
-      ...registerDto,
+    const user = await this._userRepository.create({
+      email: registerDto.email,
       password: hashedPassword,
     });
     return user;
   }
 
-  async getUserById(userId: string): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
-    return user;
-  }
-
   async validateUser(loginDto: LoginDto): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { email: loginDto.email },
-    });
+    const user = await this._userRepository.findOneByEmail(loginDto.email);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');

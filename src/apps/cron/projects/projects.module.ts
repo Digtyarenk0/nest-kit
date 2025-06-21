@@ -2,15 +2,16 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Project } from 'database/entities/projects/projects.entity';
-import { User } from 'database/entities/users/user.entity';
-
-import { PROJECT_QUENUE_KEY } from 'apps/common/quenue/constants';
+import { DatabaseModule } from 'shared/database/database.module';
+import { Project } from 'shared/database/entities/projects/projects.entity';
+import { User } from 'shared/database/entities/users/user.entity';
+import { PROJECT_QUENUE_KEY } from 'shared/infrastructure/projects/constants';
 
 import { ProjectsService } from './service/projects.service';
 
 @Module({
   imports: [
+    DatabaseModule,
     BullModule.registerQueue({
       name: PROJECT_QUENUE_KEY,
       defaultJobOptions: {

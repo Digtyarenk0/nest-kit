@@ -1,0 +1,5 @@
+export enum AppEnvironment {
+  PRODUCTION = 'PRODUCTION',
+  DEVELOPMENT = 'DEVELOPMENT',
+  STAGING = 'STAGING',
+}

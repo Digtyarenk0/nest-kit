@@ -5,10 +5,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Response } from 'express';
 
-import { UserService } from '../../user/services/user.service';
+import { UserService } from '../../../../shared/infrastructure/user/services/user.service';
 
-import { LoginDto } from '../../user/dto/login.dto';
-import { RegisterDto } from '../../user/dto/register.dto';
+import { LoginDto } from '../../../../shared/infrastructure/user/dto/login.dto';
+import { RegisterDto } from '../../../../shared/infrastructure/user/dto/register.dto';
 import { AuthService } from './auth.service';
 
 jest.mock('bcrypt');

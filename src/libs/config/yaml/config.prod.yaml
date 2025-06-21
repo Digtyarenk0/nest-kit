@@ -1,0 +1,3 @@
+WEBHOOK:
+  ACTIVITY:
+    URL: "https://3ddf-193-28-84-6.ngrok-free.app/webhooks/activity"

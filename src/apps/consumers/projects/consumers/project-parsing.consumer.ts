@@ -1,19 +1,13 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository } from 'typeorm';
 
 import { Job } from 'bull';
-import {
-  Project,
-  ProjectsStatus,
-} from 'database/entities/projects/projects.entity';
+import { IProjectsRepository } from 'shared/database/repositories/projects/projects.repo.interface';
+import { PROJECT_QUENUE_KEY } from 'shared/infrastructure/projects/constants';
 
-import { GithubService } from 'apps/common/github/service/github.service';
-import { PROJECT_QUENUE_KEY } from 'apps/common/quenue/constants';
+import { GithubService } from 'shared/common/github/service/github.service';
 
-import { delay } from 'libs/utils/delay';
+import { delay } from 'shared/utils/delay';
 
 interface ProjectParsingData {
   id: string;
@@ -26,8 +20,7 @@ export class ProjectParsingConsumer {
 
   constructor(
     private readonly githubService: GithubService,
-    @InjectRepository(Project)
-    private readonly projectRepository: Repository<Project>,
+    private readonly projectRepository: IProjectsRepository,
   ) {
     this.logger.log('ProjectParsingConsumer inited');
   }
@@ -48,17 +41,18 @@ export class ProjectParsingConsumer {
         );
         const data = await this.githubService.fetchRepoInfo(project.url);
         if (data) {
-          const dbProject = await this.projectRepository.findOne({
-            where: { id: project.id },
-          });
+          const dbProject = await this.projectRepository.findOneById(
+            project.id,
+          );
           if (dbProject) {
-            dbProject.name = data.name;
-            dbProject.repOwner = data.repOwner;
-            dbProject.stars = data.stars;
-            dbProject.forks = data.forks;
-            dbProject.openIssues = data.openIssues;
-            dbProject.status = ProjectsStatus.parsed;
-            await this.projectRepository.save(dbProject);
+            const update = {
+              name: data.name,
+              repOwner: data.repOwner,
+              stars: data.stars,
+              forks: data.forks,
+              openIssues: data.openIssues,
+            };
+            await this.projectRepository.updateToParsed(project.id, update);
           }
         }
       } catch (error: any) {

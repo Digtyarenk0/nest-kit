@@ -1,17 +1,11 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository } from 'typeorm';
 
 import { Queue } from 'bull';
-import {
-  Project,
-  ProjectsStatus,
-} from 'database/entities/projects/projects.entity';
-
-import { PROJECT_QUENUE_KEY } from 'apps/common/quenue/constants';
+import { ProjectsStatus } from 'shared/database/entities/projects/projects.entity';
+import { IProjectsRepository } from 'shared/database/repositories/projects/projects.repo.interface';
+import { PROJECT_QUENUE_KEY } from 'shared/infrastructure/projects/constants';
 
 @Injectable()
 export class ProjectsService {
@@ -20,8 +14,7 @@ export class ProjectsService {
   constructor(
     @InjectQueue(PROJECT_QUENUE_KEY)
     private readonly projectParsingQuenue: Queue,
-    @InjectRepository(Project)
-    private readonly projectRepository: Repository<Project>,
+    private readonly projectRepository: IProjectsRepository,
   ) {
     this.processQueuedProjects();
   }
@@ -29,10 +22,9 @@ export class ProjectsService {
   @Cron(CronExpression.EVERY_MINUTE)
   async processQueuedProjects() {
     try {
-      const queuedProjects = await this.projectRepository.find({
-        where: { status: ProjectsStatus.quenue },
-      });
-
+      const queuedProjects = await this.projectRepository.findByStatus(
+        ProjectsStatus.quenue,
+      );
       if (queuedProjects.length > 0) {
         this.logger.log(`Found ${queuedProjects.length} projects in queue`);
         const quenueData = queuedProjects.map((p) => ({

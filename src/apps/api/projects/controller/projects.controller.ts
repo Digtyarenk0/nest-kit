@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-import { User } from 'database/entities/users/user.entity';
+import { User } from 'shared/database/entities/users/user.entity';
 
-import { CurrentUser } from 'apps/common/auth/decorators/current-user.decorator';
-import { UseAuthGuard } from 'apps/common/auth/guards/auth.guard';
+import { CurrentUser } from 'shared/common/auth/decorators/current-user.decorator';
+import { UseAuthGuard } from 'shared/common/auth/guards/auth.guard';
 
 import { ProjectsService } from '../service/projects.service';
 

@@ -12,8 +12,8 @@ import { Response, Request } from 'express';
 
 import { AuthService } from '../services/auth.service';
 
-import { LoginDto } from '../../user/dto/login.dto';
-import { RegisterDto } from '../../user/dto/register.dto';
+import { LoginDto } from '../../../../shared/infrastructure/user/dto/login.dto';
+import { RegisterDto } from '../../../../shared/infrastructure/user/dto/register.dto';
 
 @Controller('auth')
 export class AuthController {

@@ -5,18 +5,18 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { User } from 'database/entities/users/user.entity';
 import * as Express from 'express';
+import { User } from 'shared/database/entities/users/user.entity';
+import { IUserRepository } from 'shared/database/repositories/user/user.repo.interface';
+import { LoginDto } from 'shared/infrastructure/user/dto/login.dto';
 
-import { DAY } from 'apps/common/redis/constants';
-import { CacheService } from 'apps/common/redis/service/cache.service';
+import { JwtAuthService } from 'shared/common/auth/services/jwt.service';
+import { DAY } from 'shared/common/redis/constants';
+import { CacheService } from 'shared/common/redis/service/cache.service';
 
-import { UserService } from 'apps/api/user/services/user.service';
+import { UserService } from 'shared/infrastructure/user/services/user.service';
 
-import { LoginDto } from 'apps/api/user/dto/login.dto';
-
-import { RegisterDto } from '../../user/dto/register.dto';
-import { AUTH_TOKENS_CONFIG } from '../constants';
+import { RegisterDto } from '../../../../shared/infrastructure/user/dto/register.dto';
 import { AuthLoginRes, TokenPayload } from '../types';
 
 @Injectable()
@@ -25,9 +25,11 @@ export class AuthService {
   private readonly jwtRefreshTokenCache: number = DAY * 7;
 
   constructor(
-    private readonly userService: UserService,
     private readonly cacheService: CacheService,
-    // private readonly _jwtAuthService: JwtAuthService,
+    private readonly jwtAuthService: JwtAuthService,
+
+    private readonly userService: UserService,
+    private readonly _userRepository: IUserRepository,
   ) {}
 
   async register(
@@ -57,7 +59,7 @@ export class AuthService {
         refreshToken: '',
         accessToken: '',
       };
-      // await this._jwtAuthService.generateTokens<TokenPayload>(userTokenData);
+      await this.jwtAuthService.generateTokens<TokenPayload>(userTokenData);
       this.setRefreshTokenCookie(res, refreshToken);
 
       await this.cacheService.set(
@@ -74,17 +76,6 @@ export class AuthService {
       throw new BadRequestException('Unknown error while login user');
     }
   }
-  setRefreshTokenCookie(
-    response: Express.Response,
-    refreshToken: string,
-  ): void {
-    response.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict' as const,
-      maxAge: AUTH_TOKENS_CONFIG.refreshTokenExpiresIn,
-    });
-  }
 
   async refresh(
     request: Express.Request,
@@ -96,11 +87,11 @@ export class AuthService {
     }
 
     try {
-      const payload = { id: '1' };
-      // await this._jwtAuthService.verifyRefreshToken<TokenPayload>(
-      //   refreshToken,
-      // );
-      const user = await this.userService.getUserById(payload.id);
+      const payload =
+        await this.jwtAuthService.verifyRefreshToken<TokenPayload>(
+          refreshToken,
+        );
+      const user = await this._userRepository.findOneById(payload.id);
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
@@ -114,17 +105,9 @@ export class AuthService {
         refreshToken: '',
         accessToken: '',
       };
-      // await this._jwtAuthService.generateTokens<TokenPayload>(userTokenData);
+      await this.jwtAuthService.generateTokens<TokenPayload>(userTokenData);
       await this.cacheService.set(chacheKey, tokens.refreshToken, DAY * 7);
-
-      response.cookie('refreshToken', tokens.refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: DAY * 7,
-        path: '/auth/refresh',
-      });
-
+      this.setRefreshTokenCookie(response, tokens.refreshToken);
       return {
         accessToken: tokens.accessToken,
       };
@@ -132,6 +115,18 @@ export class AuthService {
       this.logger.error(`Refresh tokens error: ${error}`);
       throw new UnauthorizedException('Failed to refresh tokens');
     }
+  }
+
+  private setRefreshTokenCookie(
+    response: Express.Response,
+    refreshToken: string,
+  ): void {
+    response.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict' as const,
+      maxAge: DAY * 7,
+    });
   }
 
   private getTokenPayload(user: User): TokenPayload {

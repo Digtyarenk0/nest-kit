@@ -4,8 +4,8 @@ import { Response } from 'express';
 
 import { AuthService } from '../services/auth.service';
 
-import { LoginDto } from '../../user/dto/login.dto';
-import { RegisterDto } from '../../user/dto/register.dto';
+import { LoginDto } from '../../../../shared/infrastructure/user/dto/login.dto';
+import { RegisterDto } from '../../../../shared/infrastructure/user/dto/register.dto';
 import { AuthController } from './auth.controller';
 
 describe('AuthController', () => {

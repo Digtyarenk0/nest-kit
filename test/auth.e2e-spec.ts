@@ -4,7 +4,7 @@ import request from 'supertest';
 import { AppModule } from '../src/apps/main.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { User } from '../src/database/entities/user/user.entity';
+import { User } from '../src/shared/database/entities/user/user.entity';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;

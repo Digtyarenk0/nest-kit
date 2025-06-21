@@ -1,16 +1,16 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Project } from 'database/entities/projects/projects.entity';
+import { DatabaseModule } from 'shared/database/database.module';
+import { PROJECT_QUENUE_KEY } from 'shared/infrastructure/projects/constants';
 
-import { GithubModule } from 'apps/common/github/github.module';
-import { PROJECT_QUENUE_KEY } from 'apps/common/quenue/constants';
+import { GithubModule } from 'shared/common/github/github.module';
 
 import { ProjectParsingConsumer } from './consumers/project-parsing.consumer';
 
 @Module({
   imports: [
+    DatabaseModule,
     GithubModule,
     BullModule.registerQueue({
       name: PROJECT_QUENUE_KEY,
@@ -26,7 +26,6 @@ import { ProjectParsingConsumer } from './consumers/project-parsing.consumer';
         duration: 1000,
       },
     }),
-    TypeOrmModule.forFeature([Project]),
   ],
   controllers: [],
   providers: [ProjectParsingConsumer],

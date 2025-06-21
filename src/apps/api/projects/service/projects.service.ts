@@ -1,36 +1,27 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
-
-import { Project } from 'database/entities/projects/projects.entity';
-import { User } from 'database/entities/users/user.entity';
+import { Project } from 'shared/database/entities/projects/projects.entity';
+import { User } from 'shared/database/entities/users/user.entity';
+import { IProjectsRepository } from 'shared/database/repositories/projects/projects.repo.interface';
 
 @Injectable()
 export class ProjectsService {
   private readonly logger = new Logger(ProjectsService.name);
 
-  constructor(
-    @InjectRepository(Project)
-    private readonly projectRepository: Repository<Project>,
-  ) {}
+  constructor(private readonly projectRepository: IProjectsRepository) {}
 
   async findUserProjects(user: User): Promise<Project[]> {
-    return this.projectRepository.find({
-      where: { ownerId: user.id },
-    });
+    return this.projectRepository.findByOwnerId(user.id);
   }
 
   async create(user: User, url: string): Promise<{ id: string }> {
-    const isExistProject = await this.projectRepository.findOne({
-      where: { url },
-    });
+    const isExistProject = await this.projectRepository.findOneByURL(url);
     if (isExistProject) {
       throw new BadRequestException('This project already axist');
     }
 
     try {
-      const project = await this.projectRepository.save({
+      const project = await this.projectRepository.create({
         url,
         ownerId: user.id,
       });
