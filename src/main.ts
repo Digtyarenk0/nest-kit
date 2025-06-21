@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder } from '@nestjs/swagger';
 
 import cookieParser from 'cookie-parser';
 
