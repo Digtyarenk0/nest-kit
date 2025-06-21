@@ -1,23 +1,31 @@
 import { INestApplication } from '@nestjs/common';
-import {
-  DocumentBuilder,
-  SwaggerDocumentOptions,
-  SwaggerModule,
-} from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-const include = []; // Modules array
+import { apiReference } from '@scalar/nestjs-api-reference';
+
+export const setupOpenApiReference = (
+  app: INestApplication,
+  config: ReturnType<DocumentBuilder['build']>,
+) => {
+  const document = SwaggerModule.createDocument(app, config);
+  app.use(
+    '/swagger',
+    apiReference({
+      theme: 'purple',
+      spec: {
+        content: document,
+      },
+    }),
+  );
+};
 
 export class Swagger {
   static init(app: INestApplication) {
-    const options: SwaggerDocumentOptions = {
-      include,
-      deepScanRoutes: false,
-    };
     const config = new DocumentBuilder()
-      .setTitle('Swagger')
+      .setTitle('API')
       .setVersion('0.1')
+      .addTag('Afridax')
       .build();
-    const document = SwaggerModule.createDocument(app, config, options);
-    SwaggerModule.setup('swagger', app, document);
+    setupOpenApiReference(app, config);
   }
 }

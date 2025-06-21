@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder } from '@nestjs/swagger';
 
 import cookieParser from 'cookie-parser';
 
@@ -21,6 +22,7 @@ async function bootstrap() {
   const app = await NestFactory.create(MainModule, appModuleParams);
 
   Swagger.init(app);
+
   const configService = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
