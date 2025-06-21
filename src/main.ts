@@ -31,9 +31,6 @@ async function bootstrap() {
   });
 
   NestLogger.log(`App logs: ${configService.get('logs')}`, 'Config');
-  // if (configService.get('logs')) {
-  //   app.useLogger(app.get(Logger));
-  // }
 
   const logger = new Logger('App');
   await app.listen(configService.get('port'), async () => {

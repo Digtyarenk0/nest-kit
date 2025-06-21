@@ -8,13 +8,17 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
+import { IUserRepository } from 'shared/database/repositories/user/user.repo.interface';
+
 import { JwtAuthService } from '../services/jwt.service';
+
+import { TokenPayload } from '../types';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtAuthService,
-    // private readonly _userRepo: IUsersRepository,
+    private readonly userRepo: IUserRepository,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -31,10 +35,11 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAccessToken(token);
+      const payload =
+        await this.jwtService.verifyAccessToken<TokenPayload>(token);
       if (!payload) throw new UnauthorizedException('Invalid token');
-      // const user = await this._userRepo.getOneById(payload.id);
-      // if (!user) throw new UnauthorizedException('User is not registered.');
+      const user = await this.userRepo.findOneById(payload.id);
+      if (!user) throw new UnauthorizedException('User is not registered.');
 
       request['user'] = {};
       return true;

@@ -11,13 +11,14 @@ import { IUserRepository } from 'shared/database/repositories/user/user.repo.int
 import { LoginDto } from 'shared/infrastructure/user/dto/login.dto';
 
 import { JwtAuthService } from 'shared/common/auth/services/jwt.service';
+import { TokenPayload } from 'shared/common/auth/types';
 import { DAY } from 'shared/common/redis/constants';
 import { CacheService } from 'shared/common/redis/service/cache.service';
 
 import { UserService } from 'shared/infrastructure/user/services/user.service';
 
 import { RegisterDto } from '../../../../shared/infrastructure/user/dto/register.dto';
-import { AuthLoginRes, TokenPayload } from '../types';
+import { AuthLoginRes } from '../types';
 
 @Injectable()
 export class AuthService {

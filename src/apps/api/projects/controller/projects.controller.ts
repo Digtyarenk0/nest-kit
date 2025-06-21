@@ -34,12 +34,4 @@ export class ProjectsController {
   getUserProjects(@CurrentUser() user: User) {
     return this.projectsService.findUserProjects(user);
   }
-
-  // @Get(':id')
-  // @ApiOperation({ summary: 'Get project by ID' })
-  // @ApiResponse({ status: 200, description: 'Project found' })
-  // @ApiResponse({ status: 404, description: 'Project not found' })
-  // findOne(@Param('id', ParseIntPipe) id: number) {
-  //   return this.projectsService.findOne(id);
-  // }
 }
