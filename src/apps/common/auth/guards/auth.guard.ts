@@ -7,20 +7,14 @@ import {
   applyDecorators,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
-
-import { User } from 'database/entities/users/user.entity';
-
-import { JWTService } from '../service/jwt.service';
+import { JwtAuthService } from '../services/jwt.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private readonly jwtService: JWTService,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtAuthService,
+    // private readonly _userRepo: IUsersRepository,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -37,16 +31,12 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAccessToken<{ id: string }>(
-        token,
-      );
-      if (!payload?.id) throw new UnauthorizedException('Invalid token');
-      const user = await this.userRepository.findOne({
-        where: { id: payload.id },
-      });
-      if (!user) throw new UnauthorizedException('User is not registered.');
+      const payload = await this.jwtService.verifyAccessToken(token);
+      if (!payload) throw new UnauthorizedException('Invalid token');
+      // const user = await this._userRepo.getOneById(payload.id);
+      // if (!user) throw new UnauthorizedException('User is not registered.');
 
-      request['user'] = user;
+      request['user'] = {};
       return true;
     } catch (error) {
       throw new UnauthorizedException('Invalid token');

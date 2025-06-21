@@ -12,7 +12,8 @@ import {
 
 import { GithubService } from 'apps/common/github/service/github.service';
 import { PROJECT_QUENUE_KEY } from 'apps/common/quenue/constants';
-import { delay } from 'apps/common/utils/delay';
+
+import { delay } from 'libs/utils/delay';
 
 interface ProjectParsingData {
   id: string;

@@ -10,11 +10,6 @@ export default (): ConfigAppType => ({
   appURL: env.APP_URL || 'http://localhost:5173',
   port: Number(env.PORT) || 5001,
   logs: env.LOGS ? JSON.parse(env.LOGS) : { level: env.LOG_LEVEL },
-  jwt: {
-    secret: env.JWT_SECRET,
-    accessExpires: env.JWT_ACCESS_EXPIRES || '15m',
-    refreshExpires: env.JWT_REFRESH_EXPIRES || '7d',
-  },
   redis: {
     host: env.REDIS_HOST || 'localhost',
     port: Number(env.REDIS_PORT) || 6379,

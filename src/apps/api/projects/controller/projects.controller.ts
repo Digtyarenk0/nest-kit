@@ -3,8 +3,8 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { User } from 'database/entities/users/user.entity';
 
-import { CurrentUser } from 'apps/common/jwt/decorators/current-user.decorator';
-import { UseAuthGuard } from 'apps/common/jwt/guard/auth.guard';
+import { CurrentUser } from 'apps/common/auth/decorators/current-user.decorator';
+import { UseAuthGuard } from 'apps/common/auth/guards/auth.guard';
 
 import { ProjectsService } from '../service/projects.service';
 

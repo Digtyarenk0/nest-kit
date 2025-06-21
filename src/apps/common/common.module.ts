@@ -1,14 +1,11 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
-import { CacheService } from './redis/service/cache.service';
-
+import { JWTAuthModule } from './auth/auth.jwt.module';
 import { GithubModule } from './github/github.module';
-import { JWTModule } from './jwt/jwt.module';
+import { CacheModule } from './redis/cache.module';
 
-@Global()
 @Module({
-  imports: [],
-  providers: [CacheService, JWTModule, GithubModule],
-  exports: [CacheService, JWTModule, GithubModule],
+  imports: [CacheModule, JWTAuthModule, GithubModule],
+  exports: [CacheModule, JWTAuthModule, GithubModule],
 })
 export class CommonModule {}

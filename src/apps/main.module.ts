@@ -9,6 +9,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import { LoggerModule } from 'nestjs-pino';
 
 import { CommonModule } from './common/common.module';
+import { ConfigurationModule } from './common/configuration.module';
 
 import configuration from 'config/configuration';
 import {
@@ -57,7 +58,13 @@ const configImports = [
   }),
 ];
 
-const appModules = [ApiModule, CronModule, ConsumerModule, CommonModule];
+const appModules = [
+  ConfigurationModule,
+  ApiModule,
+  CronModule,
+  ConsumerModule,
+  CommonModule,
+];
 @Module({
   imports: [...configImports, ...appModules],
 })

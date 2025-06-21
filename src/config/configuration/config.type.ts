@@ -1,11 +1,5 @@
 import { DataSourceOptions } from 'typeorm';
 
-export interface JwtConfig {
-  secret: string;
-  accessExpires: string;
-  refreshExpires: string;
-}
-
 export interface Database {
   connection: DataSourceOptions;
 }
@@ -21,7 +15,6 @@ export interface ConfigAppType {
   port: number;
   appURL: string;
   logs: boolean;
-  jwt: JwtConfig;
   redis: RedisConfig;
   database: Database;
 }

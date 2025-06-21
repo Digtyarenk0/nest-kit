@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Project } from 'database/entities/projects/projects.entity';
 import { User } from 'database/entities/users/user.entity';
 
-import { JWTModule } from 'apps/common/jwt/jwt.module';
 import { PROJECT_QUENUE_KEY } from 'apps/common/quenue/constants';
 
 import { ProjectsService } from './service/projects.service';
@@ -26,8 +25,6 @@ import { ProjectsService } from './service/projects.service';
         duration: 1000,
       },
     }),
-
-    JWTModule,
     TypeOrmModule.forFeature([User, Project]),
   ],
   controllers: [],
